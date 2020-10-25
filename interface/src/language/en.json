@@ -93,7 +93,7 @@
     "MashHeaterPercentage": "Mash Heater %",
     "SpargePowerPercentage": "Sparge Power %",
     "BoilTime": "Boil time",
-    "BoilTemperature": "Boil temperature",
+    "BoilTemperature": "Boil Temperature",
     "SpargeTemperature": "Sparge Temperature",
     "BoilPowerPercentage": "Boil Power %",
     "EnableSparge": "Enable Sparge",
@@ -105,7 +105,10 @@
     "PumpRestTime": "Pump Rest Time",
     "PumpCycle": "Pump Cycle",
     "EnableBoilKettle": "Enable Boil Kettle",
-    "BoilAttention": "Attention: enable only for systems with a separated boil kettle."
+    "BoilAttention": "Attention: enable only for systems with a separated boil kettle.",
+    "BoilIntervalHeatingAttention": "Attention: after reaching cook-temperatur the heater will be used switched with full power but in an interval-mode with the set up power %", 
+    "IntervalHeatingAttention": "Attention: Heater will be used switched with full power but in an interval-mode with the set up power %", 
+    "EnableIntervalHeating": "Enable Interval Heating"
   },
   "WiFiSettings": {
     "Settings": "WiFi Settings",

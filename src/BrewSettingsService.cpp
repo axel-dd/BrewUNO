@@ -13,6 +13,9 @@ void BrewSettingsService::readFromJsonObject(JsonObject &root)
     SpargeTemperature = root["st"];
     EnableSparge = root["es"];
     EnableBoilKettle = root["ebk"];
+    EnableBoilHeatInterval = root["ebhi"];
+    EnableSpargeHeatInterval = root["eshi"];
+    EnableMashHeatInterval = root["emhi"];
     BoilTime = root["bt"];
     KP = root["kP"];
     KI = root["kI"];
@@ -44,6 +47,9 @@ void BrewSettingsService::writeToJsonObject(JsonObject &root)
     root["spp"] = SpargePowerPercentage;
     root["es"] = EnableSparge;
     root["ebk"] = EnableBoilKettle;
+    root["ebhi"] = EnableBoilHeatInterval;
+    root["eshi"] = EnableSpargeHeatInterval;
+    root["emhi"] = EnableMashHeatInterval;
     root["st"] = SpargeTemperature;
     root["bt"] = BoilTime;
     root["kP"] = KP;

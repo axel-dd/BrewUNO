@@ -27,6 +27,10 @@ public:
   double SpargePowerPercentage;
   double SpargeTemperature;
 
+  bool EnableBoilHeatInterval;
+  bool EnableSpargeHeatInterval;
+  bool EnableMashHeatInterval;
+
   bool EnableSparge;
   bool EnableBoilKettle;
 

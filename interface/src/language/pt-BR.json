@@ -107,7 +107,10 @@
     "PumpRestTime": "Tempo de descanso da bomba",
     "PumpCycle": "CICLO DA BOMBA",
     "EnableBoilKettle": "Habilitar panela de fervura",
-    "BoilAttention": "Atenção: habilite apenas se a panela de fervura for independente."
+    "BoilAttention": "Atenção: habilite apenas se a panela de fervura for independente.",
+    "BoilIntervalHeatingAttention": "Atenção: após atingir a temperatura de cozimento, o aquecedor será usado comutado com potência total, mas em modo de intervalo com a% de potência configurada", 
+    "IntervalHeatingAttention": "Atenção: O aquecedor será usado comutado com potência total, mas em um modo de intervalo com a% de potência configurada", 
+    "EnableIntervalHeating": "Ativar aquecimento de intervalo"
   },
   "WiFiSettings": {
     "Settings": "WiFi - Definições",

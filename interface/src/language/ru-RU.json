@@ -103,8 +103,11 @@
     "AuxiliarySensor3": "Сенсор 3",
     "PumpRestInterval": "Отдых насоса",
     "PumpRestTime": "Время отдыха насоса",
-    "EnableBoilKettle": "Enable Boil Kettle",
-    "BoilAttention": "Attention: enable only for systems with a separated boil kettle."
+    "EnableBoilKettle": "Включить кипячение чайника",
+    "BoilAttention": "Внимание: включайте только для систем с отдельным котлом для кипячения.",
+    "BoilIntervalHeatingAttention": "Внимание: после достижения температуры готовки нагреватель будет включен на полную мощность, но в интервальном режиме с установленной мощностью%", 
+    "IntervalHeatingAttention": "Внимание: Нагреватель будет включаться на полную мощность, но в интервальном режиме с установленной мощностью%.", 
+    "EnableIntervalHeating": "Включить интервальный нагрев"
   },
   "WiFiSettings": {
     "Settings": "WiFi Settings",

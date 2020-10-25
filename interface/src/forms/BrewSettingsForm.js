@@ -134,6 +134,21 @@ class BrewSettingsForm extends Component {
                         onChange={handleValueChange("mhp")}
                         errorMessages={[<IntText text="FieldRequired" />]}
                       />
+                      <Typography className={classes.formControl}><IntText text="BrewSettings.IntervalHeatingAttention" /></Typography>
+                      <div style={{ marginTop: 0, marginLeft: 20, padding: 0 }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={brewSettings.emhi}
+                              value={'emhi'}
+                              onChange={handleCheckboxChange('emhi')}
+                              color="secondary"
+                              margin
+                            />
+                          }
+                          label={<IntText text="BrewSettings.EnableIntervalHeating" />}
+                        />
+                      </div>
                       <TextValidator className={classes.formControl}
                         name="bt"
                         validators={['required']}
@@ -207,6 +222,21 @@ class BrewSettingsForm extends Component {
                         onChange={handleFloatValueChange("sso")}
                         errorMessages={[<IntText text="FieldRequired" />]}
                       />
+                      <Typography className={classes.formControl}><IntText text="BrewSettings.IntervalHeatingAttention" /></Typography>
+                      <div style={{ marginTop: 0, marginLeft: 20, padding: 0 }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={brewSettings.eshi}
+                              value={'eshi'}
+                              onChange={handleCheckboxChange('eshi')}
+                              color="secondary"
+                              margin
+                            />
+                          }
+                          label={<IntText text="BrewSettings.EnableIntervalHeating" />}
+                        />
+                      </div>
                       <TextValidator className={classes.formControl}
                         name="spp"
                         validators={['required']}
@@ -268,6 +298,21 @@ class BrewSettingsForm extends Component {
                             />
                           }
                           label={<IntText text="BrewSettings.EnableBoilKettle" />}
+                        />
+                      </div>
+                      <Typography className={classes.formControl}><IntText text="BrewSettings.BoilIntervalHeatingAttention" /></Typography>
+                      <div style={{ marginTop: 0, marginLeft: 20, padding: 0 }}>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={brewSettings.ebhi}
+                              value={'ebhi'}
+                              onChange={handleCheckboxChange('ebhi')}
+                              color="secondary"
+                              margin
+                            />
+                          }
+                          label={<IntText text="BrewSettings.EnableIntervalHeating" />}
                         />
                       </div>
                     </Paper>

@@ -108,7 +108,10 @@
     "PumpRestTime": "Pumpenpause Dauer",
     "PumpCycle": "Pumpzyklus",
     "EnableBoilKettle": "Kochkessel aktivieren",
-    "BoilAttention": "Achtung: nur bei Anlagen mit separatem Kochkessel aktivieren."
+    "BoilAttention": "Achtung: nur bei Anlagen mit separatem Kochkessel aktivieren.",
+    "BoilIntervalHeatingAttention": "Achtung: Heizung wird nach erreichen der Kochtemperatur mit voller Leistung mit Interval-Modus nach eingestellter Heizleistung (%) betrieben", 
+    "IntervalHeatingAttention": "Achtung: Heizung wird mit voller Leistung mit Interval-Modus nach eingestellter Heizleistung (%) betrieben", 
+    "EnableIntervalHeating": "Interval Heizung aktivieren"
   },
   "WiFiSettings": {
     "Settings": "Wlan Einstellungen",

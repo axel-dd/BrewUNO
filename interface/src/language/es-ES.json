@@ -105,7 +105,10 @@
     "PumpRestTime": "Tiempo descanso bomba",
     "PumpCycle": "Ciclo de bomba",
     "EnableBoilKettle": "Habilitar hervidor de agua",
-    "BoilAttention": "Attention: enable only for systems with a separated boil kettle."
+    "BoilAttention": "Atención: habilite solo para sistemas con un hervidor de agua separado.",
+    "BoilIntervalHeatingAttention": "Atención: después de alcanzar la temperatura de cocción, el calentador se utilizará conmutado a plena potencia pero en modo de intervalo con el% de potencia de configuración", 
+    "IntervalHeatingAttention": "Atención: el calefactor se utilizará conmutado a plena potencia pero en modo de intervalo con el% de potencia configurado", 
+    "EnableIntervalHeating": "Habilitar calentamiento por intervalos"
   },
   "WiFiSettings": {
     "Settings": "Configuración",
