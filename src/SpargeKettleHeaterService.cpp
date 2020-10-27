@@ -71,3 +71,9 @@ void SpargeKettleHeaterService::TurnOff()
 {
   analogWrite(GetBus(), 0);
 }
+
+
+bool SpargeKettleHeaterService::IsIntervalHeatingOn()
+{
+  return _brewSettingsService->EnableSpargeHeatInterval;
+}

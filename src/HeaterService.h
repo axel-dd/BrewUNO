@@ -27,7 +27,7 @@ public:
   {
   }
 
-  HeaterServiceStatus Compute(double input, double target, double heaterPercentage, boolean intervalHeating)
+  HeaterServiceStatus Compute(double input, double target, double heaterPercentage)
   {
     HeaterServiceStatus status;
     uint8_t _heaterBus = GetBus();
@@ -42,12 +42,19 @@ public:
     }
 
     // check if you can use PWM or interval heating (for example when having a relay or induction-cooker)
-    if (intervalHeating)
+    if (IsIntervalHeatingOn())
     {
+      //Serial.print("stepcounter = "); Serial.println(stepcounter);
+      docheck = false;
       if (stepcounter > 100){
         stepcounter = 0;
-      } else {
+        docheck = false;
+        //Serial.print("docheck changed to false");
+      } else if (millis() > (time + 300)) {
         stepcounter++;
+        time = millis();
+        docheck = true;
+        //Serial.print("docheck changed to false");
       }
     }
 
@@ -65,16 +72,19 @@ public:
     if (_activeStatus->ActiveStep == boil)
     {
       status.PIDActing = false;
-      if (intervalHeating)
+      if (IsIntervalHeatingOn())
       {
-        if (stepcounter > _brewSettingsService->BoilPowerPercentage) { 
-          status.PWM = 0;
-          status.PWMPercentage = 0;
-          digitalWrite(_heaterBus, 0); 
-        } else {
-          status.PWM = 1023;
-          status.PWMPercentage = 100;
-          digitalWrite(_heaterBus, 1); 
+        if (docheck) // slow down check interval for interval heating
+        {
+          if (stepcounter > _brewSettingsService->BoilPowerPercentage) { 
+            status.PWM = 0;
+            status.PWMPercentage = 0;
+            digitalWrite(_heaterBus, 0); 
+          } else {
+            status.PWM = 1023;
+            status.PWMPercentage = 100;
+            digitalWrite(_heaterBus, 1); 
+          }  
         }
       } else {
         status.PWM = ((1023 * _brewSettingsService->BoilPowerPercentage) / 100);
@@ -91,17 +101,20 @@ public:
     {
       status.PIDActing = false;
       
-      if (intervalHeating)
-      {
-        // do interval only after reaching cook temp
-        if ((GetPidInput() < GetPidSetPoint()) && (stepcounter < heaterPercentage)) { 
-          status.PWM = 1023;
-          status.PWMPercentage = 100;
-          digitalWrite(_heaterBus, 1); 
-        } else {
-          status.PWM = 0;
-          status.PWMPercentage = 0;
-          digitalWrite(_heaterBus, 0); 
+      if (IsIntervalHeatingOn())
+      { 
+        if (docheck) // slow down check interval for interval heating
+        { 
+          // do interval only after reaching cook temp
+          if ((GetPidInput() < GetPidSetPoint()) && (stepcounter < heaterPercentage)) { 
+            status.PWM = 1023;
+            status.PWMPercentage = 100;
+            digitalWrite(_heaterBus, 1); 
+          } else {
+            status.PWM = 0;
+            status.PWMPercentage = 0;
+            digitalWrite(_heaterBus, 0); 
+          }
         }
       } else {
         status.PWM = ((1023 * heaterPercentage) / 100);
@@ -117,7 +130,7 @@ public:
       status.PWM = 0;
       status.PWMPercentage = 0;
       status.PIDActing = false;
-      if (intervalHeating)
+      if (IsIntervalHeatingOn())
       {
         digitalWrite(_heaterBus, 0); 
       } else {
@@ -133,8 +146,10 @@ public:
     int maxPWM = ((1023 * heaterPercentage) / 100);
     status.PWM = GetPidOutput() > maxPWM ? maxPWM : GetPidOutput();
     status.PWMPercentage = (status.PWM * 100) / 1023;
-    if (intervalHeating)
+    if (IsIntervalHeatingOn())
     {
+      if (docheck) // slow down check interval for interval heating
+      {  
         if (stepcounter > status.PWMPercentage) { 
           status.PWM = 0;
           status.PWMPercentage = 0;
@@ -144,6 +159,7 @@ public:
           status.PWMPercentage = 100;
           digitalWrite(_heaterBus, 1); 
         }
+      } 
     } else {
       analogWrite(_heaterBus, status.PWM);
     }
@@ -164,6 +180,7 @@ protected:
   virtual void TurnOff();
   virtual bool InvertedPWM();
   virtual void SetPidParameters(double input, double setpoint);
+  virtual bool IsIntervalHeatingOn();
 
   TemperatureService *_temperatureService;
   ActiveStatus *_activeStatus;
@@ -171,5 +188,7 @@ protected:
   PID *_kettlePID;
   
   uint8_t stepcounter;
+  unsigned long time = 0;
+  bool docheck;
 };
 #endif

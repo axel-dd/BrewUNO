@@ -47,6 +47,9 @@
 
 #define SERIAL_BAUD_RATE 115200
 
+
+//Pushover pushover = Pushover(PUSHOVER_TOKEN,PUSHOVER_USER, UNSAFE);
+
 OneWire oneWire(TEMPERATURE_BUS);
 DallasTemperature DS18B20(&oneWire);
 int deviceCount = 0;
@@ -200,6 +203,11 @@ void setup()
   pinMode(D3, INPUT_PULLUP);
   pcf8574.resetInterruptPin();
   attachInterrupt(digitalPinToInterrupt(D3), PCFInterrupt, FALLING);
+
+//  pushover.setUrlTitle("BrewUno");
+  //pushover.setUrl("http://" + wifiStatus.localIP().toString());
+//  pushover.setUrl("online");
+//  pushover.send();
 }
 
 void loop()

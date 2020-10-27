@@ -20,5 +20,6 @@ protected:
   void TurnOff();
   bool InvertedPWM();
   void SetPidParameters(double input, double setpoint);
+  virtual bool IsIntervalHeatingOn();
 };
 #endif

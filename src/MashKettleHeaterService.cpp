@@ -81,3 +81,8 @@ void MashKettleHeaterService::TurnOff()
       (_activeStatus->ActiveStep == mash && !_activeStatus->HeaterOn))
     analogWrite(GetBus(), 0);
 }
+
+bool MashKettleHeaterService::IsIntervalHeatingOn()
+{
+  return _brewSettingsService->EnableMashHeatInterval;
+}

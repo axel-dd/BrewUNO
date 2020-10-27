@@ -81,3 +81,10 @@ void BoilKettleHeaterService::TurnOff()
     analogWrite(BOIL_HEATER_BUS, 0);
   }
 }
+
+bool BoilKettleHeaterService::IsIntervalHeatingOn()
+{
+  if (_brewSettingsService->EnableBoilKettle)
+    return _brewSettingsService->EnableBoilHeatInterval;
+  return _brewSettingsService->EnableMashHeatInterval;
+}
