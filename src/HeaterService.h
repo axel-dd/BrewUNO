@@ -41,23 +41,6 @@ public:
       return status;
     }
 
-    // check if you can use PWM or interval heating (for example when having a relay or induction-cooker)
-    if (IsIntervalHeatingOn())
-    {
-      //Serial.print("stepcounter = "); Serial.println(stepcounter);
-      docheck = false;
-      if (stepcounter > 100){
-        stepcounter = 0;
-        docheck = false;
-        //Serial.print("docheck changed to false");
-      } else if (millis() > (time + 300)) {
-        stepcounter++;
-        time = millis();
-        docheck = true;
-        //Serial.print("docheck changed to false");
-      }
-    }
-
     SetPidParameters(input, target);
 
     if (_activeStatus->PIDSettingsUpdated)
@@ -68,29 +51,45 @@ public:
       return status;
     }
 
+    // check if you can use PWM or interval heating (for example when having a relay or induction-cooker)
+    if (IsIntervalHeatingOn())
+    {
+      // count to 100 and reset to 0 to do something like 100%
+      if (stepcounter > 100){
+        stepcounter = 0;
+      } else if (millis() > (time + 100)) { // slow the counter down to not switch too fast
+        stepcounter++;
+        time = millis();
+      }
+
+      status.PIDActing = false;
+      if (_activeStatus->ActiveStep == boil) {
+        // overwrite heaterPercentage with BoilPowerPercentage in boil-mode
+        heaterPercentage = _brewSettingsService->BoilPowerPercentage;
+      }
+      
+      if (((_activeStatus->ActiveStep == boil) && (GetPidInput() < GetPidSetPoint())) // below cook temp always on
+            || ((_activeStatus->ActiveStep == boil) && (GetPidInput() > GetPidSetPoint()) && (stepcounter < heaterPercentage)) // above cook temp do interval
+            || ((GetPidInput() < (GetPidSetPoint() + 0.1)) && (stepcounter < heaterPercentage))) { // below step temp in mashing do interval
+        status.PWM = 1023;
+        status.PWMPercentage = 100;
+        digitalWrite(_heaterBus, 1);
+      } else {
+        status.PWM = 0;
+        status.PWMPercentage = 0;
+        digitalWrite(_heaterBus, 0);
+      }
+      // when interval heating we can leave here
+      return status;
+    }
+      
     // boil mode
     if (_activeStatus->ActiveStep == boil)
     {
       status.PIDActing = false;
-      if (IsIntervalHeatingOn())
-      {
-        if (docheck) // slow down check interval for interval heating
-        {
-          if (stepcounter > _brewSettingsService->BoilPowerPercentage) { 
-            status.PWM = 0;
-            status.PWMPercentage = 0;
-            digitalWrite(_heaterBus, 0); 
-          } else {
-            status.PWM = 1023;
-            status.PWMPercentage = 100;
-            digitalWrite(_heaterBus, 1); 
-          }  
-        }
-      } else {
-        status.PWM = ((1023 * _brewSettingsService->BoilPowerPercentage) / 100);
-        status.PWMPercentage = (status.PWM * 100) / 1023;
-        analogWrite(_heaterBus, InvertedPWM() ? abs(status.PWM - 1023) : status.PWM);
-      }
+      status.PWM = ((1023 * _brewSettingsService->BoilPowerPercentage) / 100);
+      status.PWMPercentage = (status.PWM * 100) / 1023;
+      analogWrite(_heaterBus, InvertedPWM() ? abs(status.PWM - 1023) : status.PWM);
       return status;
     }
 
@@ -100,27 +99,9 @@ public:
     if (GetPidSetPoint() - GetPidInput() > _brewSettingsService->PIDStart)
     {
       status.PIDActing = false;
-      
-      if (IsIntervalHeatingOn())
-      { 
-        if (docheck) // slow down check interval for interval heating
-        { 
-          // do interval only after reaching cook temp
-          if ((GetPidInput() < GetPidSetPoint()) && (stepcounter < heaterPercentage)) { 
-            status.PWM = 1023;
-            status.PWMPercentage = 100;
-            digitalWrite(_heaterBus, 1); 
-          } else {
-            status.PWM = 0;
-            status.PWMPercentage = 0;
-            digitalWrite(_heaterBus, 0); 
-          }
-        }
-      } else {
-        status.PWM = ((1023 * heaterPercentage) / 100);
-        status.PWMPercentage = (status.PWM * 100) / 1023;
-        analogWrite(_heaterBus, status.PWM);
-      }
+      status.PWM = ((1023 * heaterPercentage) / 100);
+      status.PWMPercentage = (status.PWM * 100) / 1023;
+      analogWrite(_heaterBus, status.PWM);
       return status;
     }
 
@@ -130,12 +111,7 @@ public:
       status.PWM = 0;
       status.PWMPercentage = 0;
       status.PIDActing = false;
-      if (IsIntervalHeatingOn())
-      {
-        digitalWrite(_heaterBus, 0); 
-      } else {
-        analogWrite(_heaterBus, _activeStatus->PWM);
-      }
+      analogWrite(_heaterBus, _activeStatus->PWM);
       StartPID(_brewSettingsService->KP, _brewSettingsService->KI, _brewSettingsService->KD);
       return status;
     }
@@ -146,23 +122,7 @@ public:
     int maxPWM = ((1023 * heaterPercentage) / 100);
     status.PWM = GetPidOutput() > maxPWM ? maxPWM : GetPidOutput();
     status.PWMPercentage = (status.PWM * 100) / 1023;
-    if (IsIntervalHeatingOn())
-    {
-      if (docheck) // slow down check interval for interval heating
-      {  
-        if (stepcounter > status.PWMPercentage) { 
-          status.PWM = 0;
-          status.PWMPercentage = 0;
-          digitalWrite(_heaterBus, 0); 
-        } else {
-          status.PWM = 1023;
-          status.PWMPercentage = 100;
-          digitalWrite(_heaterBus, 1); 
-        }
-      } 
-    } else {
-      analogWrite(_heaterBus, status.PWM);
-    }
+    analogWrite(_heaterBus, status.PWM);
 
     status.PIDActing = status.PWM > 0;
     return status;
@@ -189,6 +149,5 @@ protected:
   
   uint8_t stepcounter;
   unsigned long time = 0;
-  bool docheck;
 };
 #endif
