@@ -55,7 +55,7 @@ public:
     if (IsIntervalHeatingOn())
     {
       // count to 100 and reset to 0 to do something like 100%
-      if (stepcounter > 100){
+      if (stepcounter > 99){
         stepcounter = 0;
       } else if (millis() > (time + 100)) { // slow the counter down to not switch too fast
         stepcounter++;
